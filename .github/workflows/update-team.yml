@@ -31,5 +31,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPOSITORY: ${{ github.repository }}
         run: |
-          modified_files=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
+          base_branch="${{ github.event.pull_request.base.ref }}"
+          head_branch="${{ github.event.pull_request.head.ref }}"
+          modified_files=$(git diff --name-only "$base_branch" "$head_branch")
           ruby .github/scripts/update_teams_from_txt.rb "$modified_files"
