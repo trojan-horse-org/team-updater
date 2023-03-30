@@ -24,7 +24,7 @@ jobs:
 
       - name: Update GitHub Team
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
           REPOSITORY: ${{ github.repository }}
         run: |
           python .github/scripts/update_team_from_txt.py "${{ github.event.head_commit.modified }}"
