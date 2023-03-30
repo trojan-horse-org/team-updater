@@ -29,7 +29,7 @@ def main():
 
         if team is None:
             org = repo.organization
-            team = org.create_team(name=team_name, repo_names=[repo.full_name])
+            team = org.create_team(name=team_name, repo_names=[repo.full_name], privacy="closed")
 
         # Clear current team members
         for member in team.get_members():
