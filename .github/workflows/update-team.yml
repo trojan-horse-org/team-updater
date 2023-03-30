@@ -1,12 +1,17 @@
 name: Update GitHub Teams From TXT
 
 on:
-  push:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
     paths:
       - 'teams/*.txt'
 
 jobs:
   update_teams:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -20,15 +25,13 @@ jobs:
       - name: Install dependencies
         run: |
           gem install octokit
-          
-      - name: Get modified files
-        run: |
-         modified_files="${{ github.event.head_commit.modified }}"
-          echo "Modified files: $modified_files"             
 
       - name: Update GitHub Teams
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPOSITORY: ${{ github.repository }}
         run: |
-          ruby .github/scripts/update_teams_from_txt.rb "${{ github.event.head_commit.modified }}"
+          base_sha="${{ github.event.pull_request.base.sha }}"
+          head_sha="${{ github.event.pull_request.head.sha }}"
+          modified_files=$(git diff --name-only "$base_sha" "$head_sha")
+          ruby .github/scripts/update_teams_from_txt.rb "$modified_files"
