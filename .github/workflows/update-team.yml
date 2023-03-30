@@ -31,7 +31,7 @@ jobs:
 
       - name: Update GitHub Teams
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
           REPOSITORY: ${{ github.repository }}
         run: |
           ruby .github/scripts/update_teams_from_txt.rb "${{ steps.changed-files.outputs.all_changed_files }}"
