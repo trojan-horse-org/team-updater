@@ -2,8 +2,13 @@ require 'octokit'
 
 def main
   github_token = ENV["GITHUB_TOKEN"]
+  print ENV["GITHUB_TOKEN"]
   repository = ENV["REPOSITORY"]
+  print ENV["REPOSITORY"]
   modified_files = ARGV[0].split
+  print modified_files
+
+  print repository
 
   client = Octokit::Client.new(access_token: github_token)
   repo = client.repository(repository)
