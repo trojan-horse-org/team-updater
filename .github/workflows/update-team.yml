@@ -12,19 +12,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
+      - name: Setup Python
+        uses: actions/setup-python@v2
         with:
-          ruby-version: 3.0
+          python-version: 3.x
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: |
-          gem install octokit
-
+          python -m pip install --upgrade pip
+          pip install PyGithub
+      - name: Get modified files
+        run: |
+         modified_files="${{ github.event.head_commit.modified }}"
+          echo "Modified files: $modified_files"   
       - name: Update GitHub Team
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
           ALL_MODIFIED_OR_CREATED_FILE_NAMES: ${{ github.event.head_commit.modified }}
           MODIFIED_FILES: ${{ github.event.head_commit.modified }}
         run: |
-          ruby .github/scripts/update_team_from_txt.rb "${{ github.event.head_commit.modified }}"
+          python .github/scripts/update_team_from_txt.py "${{ github.event.head_commit.modified }}"
