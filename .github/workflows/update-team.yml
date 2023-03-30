@@ -17,6 +17,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+# Use this if you want to use a GitHub App instead of a PAT, which is recommended
+      # - name: GitHub App authentication
+      #   uses: peter-murray/authenticate-with-github-app@v1
+      #   with:
+      #     app_id: ${{ secrets.APP_ID }}
+      #     private_key: ${{ secrets.PRIVATE_KEY }}
+      #     installation_id: ${{ secrets.INSTALLATION_ID }}  
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
