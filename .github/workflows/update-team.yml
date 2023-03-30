@@ -1,0 +1,30 @@
+name: Update GitHub Team From TXT
+
+on:
+  push:
+    paths:
+      - 'teams/*.txt'
+
+jobs:
+  update_team:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install PyGithub
+
+      - name: Update GitHub Team
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          python .github/scripts/update_team_from_txt.py "${{ github.event.head_commit.modified }}"
