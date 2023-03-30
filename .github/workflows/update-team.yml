@@ -1,4 +1,4 @@
-name: Update GitHub Team From TXT
+name: Update GitHub Teams From TXT
 
 on:
   push:
@@ -6,29 +6,29 @@ on:
       - 'teams/*.txt'
 
 jobs:
-  update_team:
+  update_teams:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setup Python
-        uses: actions/setup-python@v2
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          python-version: 3.x
+          ruby-version: 3.0
 
-      - name: Install Python dependencies
+      - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install PyGithub
+          gem install octokit
+          
       - name: Get modified files
         run: |
          modified_files="${{ github.event.head_commit.modified }}"
-          echo "Modified files: $modified_files"   
-      - name: Update GitHub Team
+          echo "Modified files: $modified_files"             
+
+      - name: Update GitHub Teams
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-          ALL_MODIFIED_OR_CREATED_FILE_NAMES: ${{ github.event.head_commit.modified }}
-          MODIFIED_FILES: ${{ github.event.head_commit.modified }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
         run: |
-          python .github/scripts/update_team_from_txt.py "${{ github.event.head_commit.modified }}"
+          ruby .github/scripts/update_teams_from_txt.rb "${{ github.event.head_commit.modified }}"
