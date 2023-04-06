@@ -4,7 +4,7 @@ def main
   github_token = ENV["GITHUB_TOKEN"]
   repository = ENV["REPOSITORY"]
   modified_files = ARGV[0].split
-  api_endpoint = ENV["API_ENDPOINT"] || 'https://api.github.com'
+  api_endpoint = ENV["API_ENDPOINT"].empty? ? 'https://api.github.com' : ENV["API_ENDPOINT"]
 
   print repository
 
