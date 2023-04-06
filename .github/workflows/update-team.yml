@@ -41,5 +41,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
           REPOSITORY: ${{ github.repository }}
+          API_ENDPOINT: ${{ secrets.API_ENDPOINT }}
         run: |
           ruby .github/scripts/update_teams_from_txt.rb "${{ steps.changed-files.outputs.all_changed_files }}"

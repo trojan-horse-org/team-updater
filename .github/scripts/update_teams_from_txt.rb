@@ -4,10 +4,11 @@ def main
   github_token = ENV["GITHUB_TOKEN"]
   repository = ENV["REPOSITORY"]
   modified_files = ARGV[0].split
+  api_endpoint = ENV["API_ENDPOINT"]
 
   print repository
 
-  client = Octokit::Client.new(access_token: github_token)
+  client = Octokit::Client.new(access_token: github_token, api_endpoint: api_endpoint)
   repo = client.repository(repository)
   org = client.organization(repo.owner.login)
 
