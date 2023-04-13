@@ -12,18 +12,20 @@ on:
 jobs:
   update_teams:
     if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
 # Use this if you want to use a GitHub App instead of a PAT, which is recommended
-      # - name: GitHub App authentication
-      #   uses: peter-murray/authenticate-with-github-app@v1
-      #   with:
-      #     app_id: ${{ secrets.APP_ID }}
-      #     private_key: ${{ secrets.PRIVATE_KEY }}
-      #     installation_id: ${{ secrets.INSTALLATION_ID }}  
+      - name: GitHub App authentication
+        id: get_workflow_token
+        uses: peter-murray/workflow-application-token-action@v1
+        with:
+          application_id: ${{ secrets.APP_ID }}
+          application_private_key: ${{ secrets.PRIVATE_KEY }}
+          github_api_base_url: ${{ secrets.API_ENDPOINT }} # optional, defaults to https://api.github.com
+
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -41,6 +43,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
           REPOSITORY: ${{ github.repository }}
-          API_ENDPOINT: ${{ secrets.API_ENDPOINT }}
+          API_ENDPOINT: ${{ steps.get_workflow_token.outputs.token }}
         run: |
           ruby .github/scripts/update_teams_from_txt.rb "${{ steps.changed-files.outputs.all_changed_files }}"
