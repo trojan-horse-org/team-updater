@@ -24,7 +24,7 @@ jobs:
         with:
           application_id: ${{ secrets.APP_ID }}
           application_private_key: ${{ secrets.PRIVATE_KEY }}
-          github_api_base_url: ${{ secrets.API_ENDPOINT }} # optional, defaults to https://api.github.com
+          github_api_base_url: ${{ vars.API_ENDPOINT }} # optional, defaults to https://api.github.com
 
 
       - name: Setup Ruby
@@ -41,8 +41,8 @@ jobs:
 
       - name: Update GitHub Teams
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
           REPOSITORY: ${{ github.repository }}
-          API_ENDPOINT: ${{ steps.get_workflow_token.outputs.token }}
+          API_ENDPOINT: ${{ vars.API_ENDPOINT }}
         run: |
           ruby .github/scripts/update_teams_from_txt.rb "${{ steps.changed-files.outputs.all_changed_files }}"
