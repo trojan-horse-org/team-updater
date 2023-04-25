@@ -26,7 +26,6 @@ jobs:
           application_private_key: ${{ secrets.PRIVATE_KEY }}
           github_api_base_url: ${{ vars.API_ENDPOINT }} # optional, defaults to https://api.github.com
 
-
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
