@@ -1,0 +1,35 @@
+name: Add new user to all-employees team
+on:
+  workflow_dispatch:
+
+jobs:
+  add_user_to_team:
+    runs-on: ubuntu-latest
+    if : github.event.client_payload.action == 'created' && github.event.client_payload.user.type == 'User' 
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Add user to all-employees team
+      uses: actions/github-script@v4
+      env:
+        GITHUB_TOKEN: ${{ secrets.PAT }}
+      with:
+        script: |
+          const orgName = 'trojan-horse-org';
+          const teamName = 'all-employees';
+          const username = context.payload.user.login;
+          const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+
+          // Find the team ID for the 'all-employees' team
+          const teams = await octokit.teams.list({
+            org: orgName
+          });
+          const team = teams.data.find(team => team.name === teamName);
+
+          // Add the user to the 'all-employees' team
+          await octokit.teams.addOrUpdateMembershipInOrg({
+            org: orgName,
+            team_id: team.id,
+            username: username,
+            role: 'member'
+          });
